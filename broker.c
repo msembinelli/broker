@@ -21,7 +21,7 @@ broker_context_t* broker_init(broker_subscriber_t* subscribers_array, uint32_t s
     return &m_context;
 }
 
-// TODO: Allow multiple topics per listener, or multiple listeners per topic?
+// TODO: Allow multiple listeners per topic
 bool broker_subscribe(broker_context_t* context, broker_topic_t topic, broker_listener_fn_t listener)
 {
     if(context == NULL || listener == NULL)
