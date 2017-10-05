@@ -8,9 +8,9 @@
 
 static broker_context_t m_context;
 
-broker_context_t* broker_init(broker_subscriber_t* max_subscribers)
+broker_context_t* broker_init(broker_subscriber_t* subscriber_allocation)
 {
-    memset(max_subscribers, BROKER_CONTEXT_EMPTY, sizeof(broker_subscriber_t));
-    m_context.subscribers = max_subscribers;
+    memset(subscriber_allocation, BROKER_CONTEXT_EMPTY, sizeof(broker_subscriber_t));
+    m_context.subscribers = subscriber_allocation;
     return &m_context;
 }

@@ -13,9 +13,9 @@
 void test_broker_subscribe_should_InitializeContext(void)
 {
     broker_context_t context;
-    broker_subscriber_t subscribers[MAX_NUMBER_OF_SUBSCRIBERS];
-    context.subscribers = subscribers;
-    TEST_ASSERT_EQUAL_MEMORY(&context, broker_init(&subscribers), sizeof(broker_context_t));
+    broker_subscriber_t subscriber_allocation[MAX_NUMBER_OF_SUBSCRIBERS];
+    context.subscribers = subscriber_allocation;
+    TEST_ASSERT_EQUAL_MEMORY(&context, broker_init(subscriber_allocation), sizeof(broker_context_t));
 }
 
 /* void test_helper_listener(uint8_t* array)

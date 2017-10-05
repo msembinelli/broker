@@ -2,6 +2,7 @@
 
 // Includes
 #include "stdint.h"
+#include "stdbool.h"
 #include "stdlib.h"
 #include "string.h"
 
@@ -11,12 +12,11 @@
 
 // Types
 typedef uint32_t broker_topic_t;
-void (*broker_listener)((void*));
 
 typedef struct
 {
-    broker_topic    topic;
-    broker_listener listener;
+    broker_topic_t    topic;
+    void (*broker_listener_t)(void*);
 } broker_subscriber_t;
 
 typedef struct
@@ -25,6 +25,6 @@ typedef struct
 } broker_context_t;
 
 // Prototypes
-boolean broker_init(broker_context_t* context);
-boolean broker_subscribe(broker_topic topic, broker_listener listener);
-boolean broker_publish(broker_topic topic, (void*)event);
+broker_context_t* broker_init(broker_subscriber_t* subscriber_allocation);
+// boolean broker_subscribe(broker_topic topic, broker_listener listener);
+// boolean broker_publish(broker_topic topic, (void*)event);
