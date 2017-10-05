@@ -3,14 +3,18 @@
 // Includes
 #include "broker.h"
 
-// Macros
-#define BROKER_CONTEXT_EMPTY 0
-
+// Types
 static broker_context_t m_context;
 
-broker_context_t* broker_init(broker_subscriber_t* subscriber_allocation)
+broker_context_t* broker_init(broker_subscriber_t* subscribers_array, uint32_t subscribers_array_length)
 {
-    memset(subscriber_allocation, BROKER_CONTEXT_EMPTY, sizeof(broker_subscriber_t));
-    m_context.subscribers = subscriber_allocation;
+    if(subscribers_array_length == 0 || subscribers_array == NULL)
+    {
+        // No static subscriber memory allocated
+        return NULL;
+    }
+
+    memset(subscribers_array, 0, sizeof(broker_subscriber_t) * subscribers_array_length);
+    m_context.subscribers = subscribers_array;
     return &m_context;
 }

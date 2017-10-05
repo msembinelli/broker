@@ -13,9 +13,22 @@
 void test_broker_subscribe_should_InitializeContext(void)
 {
     broker_context_t context;
-    broker_subscriber_t subscriber_allocation[MAX_NUMBER_OF_SUBSCRIBERS];
-    context.subscribers = subscriber_allocation;
-    TEST_ASSERT_EQUAL_MEMORY(&context, broker_init(subscriber_allocation), sizeof(broker_context_t));
+    broker_subscriber_t subscribers_array[MAX_NUMBER_OF_SUBSCRIBERS];
+    context.subscribers = subscribers_array;
+    TEST_ASSERT_EQUAL_MEMORY(&context, broker_init(subscribers_array, ARRAY_LENGTH(subscribers_array)), sizeof(broker_context_t));
+}
+
+void test_broker_subscribe_should_NotInitializeContext(void)
+{
+    broker_subscriber_t* subscribers_array_ptr;
+    TEST_ASSERT_NULL(broker_init(subscribers_array_ptr, ARRAY_LENGTH(subscribers_array_ptr)));
+
+    TEST_ASSERT_NULL(broker_init(NULL, 2));
+
+    TEST_ASSERT_NULL(broker_init(NULL, 0));
+
+    broker_subscriber_t subscribers_array[MAX_NUMBER_OF_SUBSCRIBERS];
+    TEST_ASSERT_NULL(broker_init(subscribers_array, 0));
 }
 
 /* void test_helper_listener(uint8_t* array)
@@ -40,6 +53,7 @@ int main(void)
 {
     UNITY_BEGIN();
     RUN_TEST(test_broker_subscribe_should_InitializeContext);
+    RUN_TEST(test_broker_subscribe_should_NotInitializeContext);
     // RUN_TEST(test_broker_subscribe_should_AllowSubscription);
     // RUN_TEST(test_broker_subscribe_should_NotAllowSubscription);
     return UNITY_END();
