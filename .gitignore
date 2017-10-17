@@ -53,3 +53,5 @@ dkms.conf
 
 # For vim turds
 *.sw*
+.mpm/
+test/unity/
