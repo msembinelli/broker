@@ -1,19 +1,43 @@
-/* Message Broker Header */
+/**********************************************************
+ * Name:
+ *     broker.h
+ *
+ * Description:
+ *     Header for embedded statically allocated message
+ *     broker.
+ *
+ * Copyright (c) 2017 Matthew Sembinelli
+ *********************************************************/
+#ifndef BROKER_H
+#define BROKER_H
 
-// Includes
-#include "stdint.h"
-#include "stdlib.h"
-#include "string.h"
+/**********************************************************
+ * Includes
+ *********************************************************/
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-// Macros
+/**********************************************************
+ * Types
+ *********************************************************/
+typedef enum
+{
+    BROKER_RETURN_BASE                   = (0x00),
 
-// Types
+    BROKER_SUCCESS                       = (BROKER_RETURN_BASE + 0),
+    BROKER_ERROR_NULL_PARAMETER          = (BROKER_RETURN_BASE + 1),
+    BROKER_ERROR_NOT_INITIALIZED         = (BROKER_RETURN_BASE + 2),
+
+    BROKER_RETURN_MAX                    = (0xFF)
+} broker_return_t;
+
 typedef uint32_t broker_topic_index_t;
-void (*broker_listener_fn_t)((void*));
+typedef void (*broker_subscriber_fn_t)(void*);
 
 typedef struct
 {
-    broker_listener_fn_t* listeners;
+    broker_subscriber_fn_t* listeners;
     uint32_t*             listeners_length;
 } broker_topic_t;
 
@@ -21,10 +45,72 @@ typedef struct
 {
     broker_topic_t*       topics;
     uint32_t              topics_length;
-    boolean               initialized;
+    bool                  initialized;
 } broker_context_t;
 
-// Prototypes
-broker_context_t* broker_init(broker_topic_t* max_topics, uint32_t max_topics_length);
-boolean broker_subscribe(broker_context_t* context, broker_topic_index_t topic_index, broker_listener_fn_t listener);
-boolean broker_publish(broker_context_t* context, broker_topic_index_t topic_index, (void*)event);
+/**********************************************************
+ * Macros
+ *********************************************************/
+#define BROKER(context_name, event_union_type, max_subscribers_length, max_event_queue_length) \
+
+/**********************************************************
+ * Prototypes
+ *********************************************************/
+/**********************************************************
+ * Name:
+ *    broker_init
+ *
+ * Description:
+ *    Initializes the broker context.
+ *
+ * Parameters:
+ *    broker_context_t* const ctx - Pointer to the broker
+ *                                  context.
+ *
+ * Returns:
+ *    BROKER_SUCCESS - Successfully initialized broker.
+ *    BROKER_ERROR_NULL_PARAMETER - When ctx is NULL.
+ *********************************************************/
+uint32_t broker_init(broker_context_t* const ctx);
+
+/**********************************************************
+ * Name:
+ *    broker_subscribe
+ *
+ * Description:
+ *    Registers subscriber callback with the broker context
+ *    for the given topic index.
+ *
+ * Parameters:
+ *    broker_context_t* const ctx - Pointer to the broker
+ *                                  context.
+ *
+ * Returns:
+ *    BROKER_SUCCESS - Successfully subscribed.
+ *    BROKER_ERROR_NULL_PARAMETER - When any input pointers
+ *                                  are NULL.
+ *    BROKER_ERROR_NOT_INITIALIZED - ctx not intialized.
+ *********************************************************/
+uint32_t broker_subscribe(broker_context_t* ctx, broker_topic_index_t topic_index, broker_subscriber_fn_t subscriber);
+
+/**********************************************************
+ * Name:
+ *    broker_publish
+ *
+ * Description:
+ *    Publishes a message to the broker queue for the given
+ *    topic.
+ *
+ * Parameters:
+ *    broker_context_t* const ctx - Pointer to the broker
+ *                                  context.
+ *
+ * Returns:
+ *    BROKER_SUCCESS - Successfully published.
+ *    BROKER_ERROR_NULL_PARAMETER - When any input pointers
+ *                                  are NULL.
+ *    BROKER_ERROR_NOT_INITIALIZED - ctx not intialized.
+ *********************************************************/
+uint32_t broker_publish(broker_context_t* ctx, broker_topic_index_t topic_index, void* event);
+
+#endif /* BROKER_H */

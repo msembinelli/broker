@@ -51,7 +51,12 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# For vim turds
-*.sw*
+# mpm and module paths
 .mpm/
 test/unity/
+
+# gcov files
+*.gcov
+*.gcda
+*.gcno
+*.swp
